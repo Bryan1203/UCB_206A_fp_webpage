@@ -15,27 +15,17 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 
 // Navbar scroll effect
-let lastScroll = 0;
 const navbar = document.querySelector('#navbar');
 
+// Keep navbar visible; only adjust shadow when scrolled
 window.addEventListener('scroll', () => {
     const currentScroll = window.pageYOffset;
-
     if (currentScroll <= 0) {
         navbar.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
-        return;
-    }
-
-    if (currentScroll > lastScroll) {
-        // Scrolling down
-        navbar.style.transform = 'translateY(-100%)';
     } else {
-        // Scrolling up
         navbar.style.transform = 'translateY(0)';
         navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.3)';
     }
-
-    lastScroll = currentScroll;
 });
 
 // Active navigation link highlighting
@@ -82,42 +72,26 @@ document.querySelectorAll('.problem-card, .pillar, .strategy-card, .hardware-car
     observer.observe(el);
 });
 
-// Add glitch effect on hover for hero title
+// Build letter-by-letter reveal for hero title
 const glitchText = document.querySelector('.glitch');
 if (glitchText) {
-    glitchText.addEventListener('mouseenter', () => {
-        glitchText.style.animation = 'glitch 0.3s ease';
+    const raw = glitchText.getAttribute('data-text')?.trim() || glitchText.textContent.trim();
+    glitchText.textContent = '';
+    raw.split('').forEach((char, idx) => {
+        const span = document.createElement('span');
+        span.textContent = char;
+        span.style.setProperty('--d', idx);
+        glitchText.appendChild(span);
     });
-
-    glitchText.addEventListener('animationend', () => {
-        glitchText.style.animation = '';
-    });
+    glitchText.setAttribute('aria-label', raw);
+    const triggerReveal = () => glitchText.classList.add('reveal');
+    requestAnimationFrame(triggerReveal);
+    window.addEventListener('load', triggerReveal, { once: true });
 }
 
 // Add CSS for glitch effect dynamically
 const style = document.createElement('style');
 style.textContent = `
-    @keyframes glitch {
-        0% {
-            transform: translate(0);
-        }
-        20% {
-            transform: translate(-2px, 2px);
-        }
-        40% {
-            transform: translate(-2px, -2px);
-        }
-        60% {
-            transform: translate(2px, 2px);
-        }
-        80% {
-            transform: translate(2px, -2px);
-        }
-        100% {
-            transform: translate(0);
-        }
-    }
-
     .nav-menu a.active {
         color: var(--primary-color);
         position: relative;
@@ -135,50 +109,32 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Parallax effect for hero section
-window.addEventListener('scroll', () => {
+// Parallax and scale effect for hero section
+const hero = document.querySelector('.hero');
+const heroContent = document.querySelector('.hero-content');
+const heroVisual = document.querySelector('.hero-visual');
+
+const updateHeroMotion = () => {
     const scrolled = window.pageYOffset;
-    const heroContent = document.querySelector('.hero-content');
     if (heroContent && scrolled < window.innerHeight) {
         heroContent.style.transform = `translateY(${scrolled * 0.5}px)`;
         heroContent.style.opacity = 1 - (scrolled / window.innerHeight);
     }
-});
 
-// Counter animation for numbers
-function animateCounter(element, target, duration = 2000) {
-    const start = 0;
-    const increment = target / (duration / 16);
-    let current = start;
+    if (hero && heroVisual) {
+        const heroHeight = hero.offsetHeight || window.innerHeight;
+        const progress = Math.min(Math.max(scrolled / heroHeight, 0), 1);
+        const scale = 1.1 + progress * 0.35;
+        const translateY = progress * -40;
+        const rotate = progress * 2.5;
+        heroVisual.style.transform = `translate(-50%, -50%) scale(${scale}) translateY(${translateY}px) rotate(${rotate}deg)`;
+        heroVisual.style.opacity = 1 - progress * 0.12;
+    }
+};
 
-    const timer = setInterval(() => {
-        current += increment;
-        if (current >= target) {
-            current = target;
-            clearInterval(timer);
-        }
-        element.textContent = Math.floor(current);
-    }, 16);
-}
-
-// Animate summary numbers when they come into view
-const summaryNumbers = document.querySelectorAll('.summary-number');
-const summaryObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const number = entry.target;
-            const targetValue = parseInt(number.textContent);
-            if (!number.classList.contains('animated')) {
-                animateCounter(number, targetValue);
-                number.classList.add('animated');
-            }
-        }
-    });
-}, { threshold: 0.5 });
-
-summaryNumbers.forEach(number => {
-    summaryObserver.observe(number);
-});
+window.addEventListener('scroll', updateHeroMotion);
+window.addEventListener('resize', updateHeroMotion);
+window.addEventListener('load', updateHeroMotion);
 
 // Add hover effect to pipeline steps
 document.querySelectorAll('.pipeline-step').forEach(step => {
