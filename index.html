@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRISM: Precision Relocation via Intelligent Slide Manipulation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">PRISM</div>
+            <ul class="nav-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#perception">Perception</a></li>
+                <li><a href="#planning">Planning</a></li>
+                <li><a href="#actuation">Actuation</a></li>
+                <li><a href="#architecture">System</a></li>
+                <li><a href="#team">Team</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1 class="glitch" data-text="PRISM">PRISM</h1>
+            <h2>Precision Relocation via Intelligent Slide Manipulation</h2>
+            <p class="subtitle">An intelligent robotic system for automated slide handling</p>
+            <div class="hero-meta">
+                <span class="course">EECS/ME 206A - Team 45</span>
+                <span class="separator">|</span>
+                <span class="sponsor">Industry Project by Ember Robotics</span>
+            </div>
+            <a href="#overview" class="cta-button">Explore Project</a>
+        </div>
+    </section>
+
+    <!-- Problem Statement -->
+    <section id="overview" class="section problem-section">
+        <div class="container">
+            <h2 class="section-title">Problem Statement</h2>
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="icon">⚠️</div>
+                    <h3>Manual & Inefficient</h3>
+                    <p>Current slide handling workflow requires manual intervention</p>
+                </div>
+                <div class="problem-card">
+                    <div class="icon">🦠</div>
+                    <h3>Contamination Risks</h3>
+                    <p>Potential contamination risks or harm to human operators</p>
+                </div>
+                <div class="problem-card highlight">
+                    <div class="icon">🤖</div>
+                    <h3>Robotic Solution</h3>
+                    <p>A robot arm can automate the process safely and efficiently!</p>
+                </div>
+            </div>
+
+            <div class="goal-section">
+                <h3>Our Goal</h3>
+                <p>Design an intelligent manipulator system with:</p>
+                <ul class="feature-list">
+                    <li>Computer vision for slide identification</li>
+                    <li>Precise pick-and-place in 3D space</li>
+                    <li>Robust operation for continuous tasks</li>
+                </ul>
+                <p class="approach"><strong>Our Approach:</strong> Integrate computer vision + motion planning + custom hardware into a complete ROS2 system</p>
+            </div>
+
+            <div class="image-showcase">
+                <img src="images/image21.png" alt="PRISM Robot System" class="showcase-image">
+            </div>
+        </div>
+    </section>
+
+    <!-- System Overview -->
+    <section id="system-overview" class="section dark-section">
+        <div class="container">
+            <h2 class="section-title">System Overview</h2>
+            <div class="system-pillars">
+                <div class="pillar">
+                    <div class="pillar-icon">👁️</div>
+                    <h3>Perception</h3>
+                    <p>Computer Vision algorithm to detect slides from RGB image and estimate their 6D poses</p>
+                </div>
+                <div class="pillar">
+                    <div class="pillar-icon">🗺️</div>
+                    <h3>Planning</h3>
+                    <p>Motion planning with MoveIt2, leveraging OMPL for path-finding and IK solvers</p>
+                </div>
+                <div class="pillar">
+                    <div class="pillar-icon">⚙️</div>
+                    <h3>Actuation</h3>
+                    <p>Custom hardware interface executing trajectories via ROS2 services on microcontroller-driven gripper</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Perception Section -->
+    <section id="perception" class="section">
+        <div class="container">
+            <h2 class="section-title">Perception</h2>
+
+            <div class="perception-overview">
+                <div class="overview-content">
+                    <h3>Challenge</h3>
+                    <p>Detect yellow slide box and transparent glass slides using <strong>PURE RGB only!</strong></p>
+                    <div class="challenge-box">
+                        <p><strong>Input:</strong> An RGB image</p>
+                        <p><strong>Output:</strong> Slide position + orientation (in SE3)</p>
+                        <p><strong>Technical Challenge:</strong> Depth cam cannot see through transparent glass slide</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Strategies</h3>
+            <div class="strategies-grid">
+                <div class="strategy-card">
+                    <h4>Aruco Marker + OpenCV</h4>
+                    <div class="strategy-content">
+                        <div class="pipeline">
+                            <div class="pipeline-step">Frame Publication</div>
+                            <div class="pipeline-arrow">→</div>
+                            <div class="pipeline-step">Box Localization</div>
+                            <div class="pipeline-arrow">→</div>
+                            <div class="pipeline-step">Slide Detection</div>
+                            <div class="pipeline-arrow">→</div>
+                            <div class="pipeline-step">Canny Edge Detection</div>
+                        </div>
+                        <ul class="feature-list">
+                            <li><strong>Marker Detection:</strong> Stable OpenCV library to locate the box & region of interest</li>
+                            <li><strong>Output:</strong> SE3 of box (x-y position, depth, orientation)</li>
+                            <li><strong>Slide Detection:</strong> Canny edge detection with 25 kernels for possible slots</li>
+                            <li><strong>Performance:</strong> Very high reliability, fast processing</li>
+                            <li><strong>Limitation:</strong> Requires marker, fixed slide position</li>
+                        </ul>
+                        <div class="method-images">
+                            <img src="images/image29.png" alt="Canny Edge Detection Results" class="method-image">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="strategy-card">
+                    <h4>G-SAM (GroundedDINO + SAM)</h4>
+                    <div class="strategy-content">
+                        <div class="pipeline">
+                            <div class="pipeline-step">Frame Publication</div>
+                            <div class="pipeline-arrow">→</div>
+                            <div class="pipeline-step">Text-Obj Detection (GroundedDINO)</div>
+                            <div class="pipeline-arrow">→</div>
+                            <div class="pipeline-step">Image Segmentation (SAM)</div>
+                            <div class="pipeline-arrow">→</div>
+                            <div class="pipeline-step">Slide Detection</div>
+                        </div>
+                        <ul class="feature-list">
+                            <li><strong>GroundedDINO:</strong> Text-based object detection for identifying objects</li>
+                            <li><strong>SAM:</strong> Segment Anything for precise image segmentation</li>
+                            <li><strong>Output:</strong> Object boxes and masked objects</li>
+                            <li><strong>Performance:</strong> High reliability, slower processing</li>
+                            <li><strong>Advantage:</strong> No marker required, adaptable to any slide position</li>
+                        </ul>
+                        <div class="method-images">
+                            <img src="images/image31.png" alt="G-SAM Detection Pipeline" class="method-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="perception-visualization">
+                <h3 class="subsection-title">Detection Visualization</h3>
+                <div class="visualization-grid">
+                    <div class="viz-item">
+                        <img src="images/image24.png" alt="Slide Detection Grid" class="viz-image">
+                        <p>25-kernel grid for slide detection</p>
+                    </div>
+                    <div class="viz-item">
+                        <img src="images/image27.png" alt="Detection Results" class="viz-image">
+                        <p>Real-time detection results</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="comparison-table">
+                <h3 class="subsection-title">Method Comparison</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>ArUco Markers</th>
+                            <th>G-SAM</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Speed</td>
+                            <td class="positive">Fast</td>
+                            <td>Slower</td>
+                        </tr>
+                        <tr>
+                            <td>Reliability</td>
+                            <td class="positive">Very High</td>
+                            <td class="positive">High</td>
+                        </tr>
+                        <tr>
+                            <td>Marker Required</td>
+                            <td>Yes</td>
+                            <td class="positive">No</td>
+                        </tr>
+                        <tr>
+                            <td>Adaptability</td>
+                            <td>Fixed slide position</td>
+                            <td class="positive">Any slide position</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Planning Section -->
+    <section id="planning" class="section dark-section">
+        <div class="container">
+            <h2 class="section-title">Planning</h2>
+
+            <div class="planning-content">
+                <h3>Computer Vision with MoveIt2</h3>
+                <p>Integrating TM12 kinematics (link_6) for precise manipulation</p>
+
+                <div class="planning-features">
+                    <div class="feature-box">
+                        <h4>ik.py Implementation</h4>
+                        <ul class="feature-list">
+                            <li><strong>Inverse Kinematics:</strong> MoveIt2 /compute_ik service for pose-to-joint conversion</li>
+                            <li><strong>Trajectory Planning:</strong> RRTstar planner with scene objects and enforced joint limits</li>
+                            <li><strong>Execution:</strong> /follow_joint_trajectory action client with dual velocity profiles
+                                <ul>
+                                    <li>Z-axis: 20% velocity</li>
+                                    <li>XY-axes: 40% velocity</li>
+                                </ul>
+                            </li>
+                            <li><strong>Technical Challenge:</strong> Quaternion normalization required for stable IK solutions</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-box">
+                        <h4>Key Capabilities</h4>
+                        <ul class="feature-list">
+                            <li>Pose → target joint angles conversion</li>
+                            <li>Collision avoidance</li>
+                            <li>Stable after quaternion fix</li>
+                            <li>Optimized path planning with RRTstar</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Actuation Section -->
+    <section id="actuation" class="section">
+        <div class="container">
+            <h2 class="section-title">Actuation</h2>
+
+            <div class="actuation-challenge">
+                <h3>Challenge</h3>
+                <ul class="challenge-list">
+                    <li>No gripper available to use</li>
+                    <li>Built-in camera unable to access when ROS2 listener node is running</li>
+                </ul>
+                <h3>Our Solution</h3>
+                <p>Design a custom gripper to pick and place slides, and CAD an adapter to mount camera and gripper</p>
+            </div>
+
+            <div class="hardware-showcase">
+                <img src="images/image59.jpg" alt="Complete Hardware Setup" class="hardware-main-image">
+                <p class="image-caption">Complete PRISM hardware setup with TM12M robot arm, RealSense camera, and custom gripper</p>
+            </div>
+
+            <div class="hardware-grid">
+                <div class="hardware-card">
+                    <h4>Initial Gripper Design</h4>
+                    <img src="images/image34.jpg" alt="Initial Gripper" class="card-image">
+                    <ul class="feature-list">
+                        <li><strong>Motor:</strong> MG996R servo motor (PWM-Controlled)</li>
+                        <li><strong>Power:</strong> 4 AA battery holder (6V supply)</li>
+                        <li><strong>Controller:</strong> Jetson Nano as ROS2 computer</li>
+                    </ul>
+                </div>
+
+                <div class="hardware-card highlight">
+                    <h4>Improved Gripper</h4>
+                    <img src="images/image37.png" alt="Improved Gripper" class="card-image">
+                    <ul class="feature-list">
+                        <li><strong>Enhanced Control:</strong> Arduino Nano mounted next to gripper</li>
+                        <li><strong>Communication:</strong> USB (Serial) back to ROS2 computer</li>
+                        <li><strong>Software:</strong> Gripper server in ROS2 + PWM Arduino code</li>
+                    </ul>
+                </div>
+
+                <div class="hardware-card">
+                    <h4>Hardware Setup</h4>
+                    <img src="images/image60.png" alt="Hardware Components" class="card-image">
+                    <p>CAD and 3D-print an adapter to connect:</p>
+                    <ul class="feature-list">
+                        <li>Techman TM12M robot arm</li>
+                        <li>Intel RealSense D435i depth camera</li>
+                        <li>MG996R servo gripper</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="adapter-iteration">
+                <h3 class="subsection-title">Adapter Iteration</h3>
+                <div class="iteration-grid">
+                    <div class="iteration-card problem">
+                        <h4>Version 1: Issues</h4>
+                        <img src="images/image53.png" alt="Adapter Version 1" class="iteration-image">
+                        <p>Column structure failed after a few tests</p>
+                        <p>Required a more robust structure</p>
+                    </div>
+                    <div class="iteration-card solution">
+                        <h4>Version 2: Improvements</h4>
+                        <img src="images/image54.png" alt="Adapter Version 2" class="iteration-image">
+                        <ul class="feature-list">
+                            <li>Higher infill rate to increase overall stiffness</li>
+                            <li>Stronger ribs to distribute stress more equally</li>
+                            <li>More suitable rib dimensions for simpler assembly</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- System Architecture -->
+    <section id="architecture" class="section dark-section">
+        <div class="container">
+            <h2 class="section-title">System Architecture</h2>
+
+            <div class="architecture-image-container">
+                <img src="images/image57.png" alt="PRISM System Architecture" class="architecture-main-image">
+            </div>
+
+            <div class="architecture-diagram">
+                <div class="arch-layer">
+                    <h4>User Interface</h4>
+                    <div class="arch-node">Launch File</div>
+                    <div class="arch-node">User</div>
+                </div>
+
+                <div class="arch-layer">
+                    <h4>Perception Layer</h4>
+                    <div class="arch-node">Slide Detector</div>
+                    <div class="arch-node small">Marker Detect</div>
+                    <div class="arch-node small">GSAM Detect</div>
+                    <div class="arch-node">Camera Static TF</div>
+                </div>
+
+                <div class="arch-layer">
+                    <h4>Planning Layer</h4>
+                    <div class="arch-node">IK (Inverse Kinematics)</div>
+                    <div class="arch-node">Pick and Place</div>
+                </div>
+
+                <div class="arch-layer">
+                    <h4>Actuation Layer</h4>
+                    <div class="arch-node">Gripper Control</div>
+                    <div class="arch-node">Robot Control</div>
+                </div>
+            </div>
+
+            <div class="architecture-description">
+                <h3>Communication Flow</h3>
+                <ul class="feature-list">
+                    <li><strong>Service Calls:</strong> User → Pick_and_place → IK → Gripper</li>
+                    <li><strong>Action Calls:</strong> IK → Robot Control for trajectory execution</li>
+                    <li><strong>TF Publishing:</strong> Slide detector publishes slide transforms</li>
+                    <li><strong>Camera Transform:</strong> Camera to base coordinate transformation</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Future Work -->
+    <section id="future" class="section">
+        <div class="container">
+            <h2 class="section-title">Future Improvements</h2>
+            <div class="future-grid">
+                <div class="future-card">
+                    <div class="future-icon">🎯</div>
+                    <h4>Robust CV Model</h4>
+                    <p>End-to-end YOLO model after dataset collection</p>
+                </div>
+                <div class="future-card">
+                    <div class="future-icon">🤏</div>
+                    <h4>Adaptive Gripper</h4>
+                    <p>Enhanced gripper design for various slide types</p>
+                </div>
+                <div class="future-card">
+                    <div class="future-icon">📊</div>
+                    <h4>Precise Placement</h4>
+                    <p>Accurate placement in sorted order</p>
+                </div>
+                <div class="future-card">
+                    <div class="future-icon">⚡</div>
+                    <h4>Speed Optimization</h4>
+                    <p>Improve throughput by precomputing paths</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo & Results -->
+    <section id="demo" class="section">
+        <div class="container">
+            <h2 class="section-title">System in Action</h2>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <img src="images/image38.gif" alt="Slide Detection Demo" class="demo-gif">
+                    <h4>Real-time Slide Detection</h4>
+                </div>
+                <div class="demo-item">
+                    <img src="images/image39.gif" alt="Pick and Place Demo" class="demo-gif">
+                    <h4>Automated Pick & Place</h4>
+                </div>
+                <div class="demo-item">
+                    <img src="images/image42.gif" alt="Complete Workflow" class="demo-gif">
+                    <h4>Complete Workflow</h4>
+                </div>
+            </div>
+            <div class="result-images">
+                <img src="images/image50.png" alt="System Results" class="result-image">
+            </div>
+        </div>
+    </section>
+
+    <!-- Summary -->
+    <section id="summary" class="section dark-section">
+        <div class="container">
+            <h2 class="section-title">Summary</h2>
+            <div class="summary-content">
+                <div class="summary-item">
+                    <div class="summary-number">01</div>
+                    <p>Implement G-SAM and slide edge detection pipeline to locate slides positions</p>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-number">02</div>
+                    <p>Utilize MoveIt2 to calculate inverse kinematics and generate path</p>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-number">03</div>
+                    <p>Connect hardware components with the custom adapter and execute control sequence</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="section">
+        <div class="container">
+            <h2 class="section-title">Team</h2>
+            <div class="team-info">
+                <h3>EECS/ME 206A - Team 45</h3>
+                <div class="team-members">
+                    <div class="member">David Chen</div>
+                    <div class="member">Ryan Chung</div>
+                    <div class="member">Yu-Wei Chang</div>
+                    <div class="member">Bryan Chang</div>
+                    <div class="member">Kain Hung</div>
+                </div>
+                <div class="sponsor-section">
+                    <h4>Industry Project Sponsor</h4>
+                    <p class="sponsor-name">Ember Robotics</p>
+                </div>
+            </div>
+
+            <div class="thank-you">
+                <h2>Thank You!</h2>
+                <p>For more information about this project, please contact the team.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 PRISM Project - Team 45 | EECS/ME 206A</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
