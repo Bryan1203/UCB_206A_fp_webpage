@@ -14,6 +14,7 @@
             <ul class="nav-menu">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#overview">Problem</a></li>
+                <li><a href="#demo-video">Demo</a></li>
                 <li><a href="#system-overview">System</a></li>
                 <li><a href="#perception">Perception</a></li>
                 <li><a href="#planning">Planning</a></li>
@@ -44,31 +45,51 @@
             <h2 class="section-title">Problem Statement</h2>
             <div class="problem-grid">
                 <div class="problem-card">
-                    <div class="icon">⚠️</div>
+                    <div class="icon">👷‍♂️</div>
                     <h3>Manual & Inefficient</h3>
                     <p>Current slide handling workflow requires manual intervention</p>
                 </div>
                 <div class="problem-card">
                     <div class="icon">🦠</div>
                     <h3>Contamination Risks</h3>
-                    <p>Potential contamination risks or harm to human operators</p>
-                </div>
-                <div class="problem-card highlight">
-                    <div class="icon">🤖</div>
-                    <h3>Robotic Solution</h3>
-                    <p>A robot arm can automate the process safely and efficiently!</p>
+                    <p>Potential contamination risks that affect experiment results</p>
                 </div>
             </div>
 
             <div class="goal-section">
-                <h3>Our Goal</h3>
-                <p>Design an intelligent manipulator system with:</p>
-                <ul class="feature-list">
-                    <li>Computer vision for slide identification</li>
-                    <li>Precise pick-and-place in 3D space</li>
-                    <li>Robust operation for continuous tasks</li>
-                </ul>
+                <div class="goal-inner">
+                    <div class="goal-content">
+                        <div class="goal-text">
+                            <h3>Our Goal</h3>
+                            <p>Design an intelligent manipulator system with:</p>
+                            <ul class="feature-list">
+                                <li>Computer vision for slide identification</li>
+                                <li>Precise pick-and-place in 3D space</li>
+                                <li>Robust operation for continuous tasks</li>
+                            </ul>
+                        </div>
+                        <div class="goal-graphic">
+                            <img src="images/image23.png" alt="PRISM goal illustration">
+                        </div>
+                    </div>
+                </div>
                 <p class="approach"><strong>Our Approach:</strong> Integrate computer vision + motion planning + custom hardware into a complete ROS2 system</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Demo Video -->
+    <section id="demo-video" class="section">
+        <div class="container">
+            <h2 class="section-title">Demo Video</h2>
+            <div class="video-wrapper">
+                <iframe src="https://www.youtube.com/embed/4Mbxl2Z15pg?si=uDb3a2DtugLRp3_x"
+                        title="PRISM Demo Video"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen>
+                </iframe>
             </div>
         </div>
     </section>
@@ -87,7 +108,7 @@
                 </a>
                 <a class="pillar-link" href="#planning">
                     <div class="pillar">
-                        <div class="pillar-icon">🗺️</div>
+                        <div class="pillar-icon">🧠</div>
                         <h3>Planning</h3>
                         <p>Motion planning with MoveIt2, leveraging OMPL for path-finding and IK solvers</p>
                     </div>
@@ -109,7 +130,7 @@
             <h2 class="section-title">System Architecture</h2>
 
             <div class="architecture-image-container">
-                <img src="images/ChatGPT Image Dec 16, 2025 at 10_06_43 PM.png" alt="PRISM System Architecture" class="architecture-main-image">
+                <img src="images/42A5B40D-EB54-408C-9088-F089410A0A6A.PNG" alt="PRISM System Architecture" class="architecture-main-image">
             </div>
 
         </div>
@@ -135,7 +156,7 @@
             <h3 class="subsection-title">Strategies</h3>
             <div class="strategies-grid">
                 <div class="strategy-card">
-                    <h4>Aruco Marker + OpenCV</h4>
+                    <h4>ArUco Marker + OpenCV</h4>
                     <div class="strategy-content">
                         <div class="pipeline">
                             <div class="pipeline-step">Frame Publication</div>
@@ -241,6 +262,42 @@
         <div class="container">
             <h2 class="section-title">Planning</h2>
 
+            <div class="step-flow">
+                <div class="step-card">
+                    <h4>1. Scan & Queue</h4>
+                    <p>Parse TFs to build target list</p>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step-card">
+                    <h4>2. Aligned Pick</h4>
+                    <p>Match frame & grip</p>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step-card">
+                    <h4>3. Move to Target</h4>
+                    <p>Plan & transport</p>
+                </div>
+                <div class="step-arrow">→</div>
+                <div class="step-card">
+                    <h4>4. Tilt & Place</h4>
+                    <p>Release with tilt</p>
+                </div>
+            </div>
+            <div class="demo-grid">
+                <div class="demo-item">
+                    <img src="images/image39.gif" alt="Slide Detection Demo" class="demo-gif">
+                </div>
+                <div class="demo-item">
+                    <img src="images/image40.gif" alt="Pick and Place Demo" class="demo-gif">
+                </div>
+                <div class="demo-item">
+                    <img src="images/image38.gif" alt="Transport to target" class="demo-gif">
+                </div>
+                <div class="demo-item">
+                    <img src="images/image41.gif" alt="Placement" class="demo-gif">
+                </div>
+            </div>
+
             <div class="planning-content">
                 <h3>Computer Vision with MoveIt2</h3>
                 <p>Integrating TM12 kinematics (link_6) for precise manipulation</p>
@@ -272,6 +329,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </section>
 
@@ -282,20 +340,20 @@
 
             <div class="actuation-challenge">
                 <h3>Challenge</h3>
-                <ul class="challenge-list">
+                <ul class="feature-list">
                     <li>No gripper available to use</li>
                     <li>Built-in camera unable to access when ROS2 listener node is running</li>
                 </ul>
                 <h3>Our Solution</h3>
-                <p>Design a custom gripper to pick and place slides, and CAD an adapter to mount camera and gripper</p>
+                <p class="feature-list-item">Design a custom gripper to pick and place slides, and CAD an adapter to mount camera and gripper</p>
             </div>
 
             <div class="hardware-showcase"></div>
 
             <div class="hardware-grid">
                 <div class="hardware-card">
-                    <h4>Initial Gripper Design</h4>
-                    <img src="images/image34.jpg" alt="Initial Gripper" class="card-image">
+                    <h4>Initial Gripper</h4>
+                    <img src="images/C7FC0665-593E-4368-8C00-0ED90201FDCF.PNG" alt="Initial Gripper" class="card-image">
                     <ul class="feature-list">
                         <li><strong>Motor:</strong> MG996R servo motor (PWM-Controlled)</li>
                         <li><strong>Power:</strong> 4 AA battery holder (6V supply)</li>
@@ -312,10 +370,14 @@
                         <li><strong>Software:</strong> Gripper server in ROS2 + PWM Arduino code</li>
                     </ul>
                 </div>
+            </div>
 
-                <div class="hardware-card">
-                    <h4>Hardware Setup</h4>
-                    <img src="images/Image 2025-12-16 at 9.40 PM.jpg" alt="Hardware Components" class="card-image">
+            <div class="hardware-setup-wide">
+                <div class="hardware-setup-media">
+                    <img src="images/Image 2025-12-16 at 9.40 PM.jpg" alt="Hardware Components" class="hardware-main-image">
+                </div>
+                <div class="hardware-setup-text">
+                    <h3>Hardware Setup</h3>
                     <p>CAD and 3D-print an adapter to connect:</p>
                     <ul class="feature-list">
                         <li>Techman TM12M robot arm</li>
@@ -329,14 +391,36 @@
                 <h3 class="subsection-title">Adapter Iteration</h3>
                 <div class="iteration-grid">
                     <div class="iteration-card problem">
-                        <h4>Version 1: Issues</h4>
-                        <img src="images/image57.png" alt="Adapter Version 1" class="iteration-image">
-                        <p>Column structure failed after a few tests</p>
-                        <p>Required a more robust structure</p>
+                        <h4>Version 1</h4>
+                        <model-viewer class="model-viewer-frame"
+                                      src="images/adaptor_v1.glb"
+                                      auto-rotate
+                                      camera-controls
+                                      ar
+                                      style="--progress-bar-color: var(--primary-color); --poster-color: transparent;"
+                                      alt="Adapter Version 1 3D model">
+                            <div class="model-fallback">
+                                <p>Loading 3D model... ensure <code>model-viewer</code> script is available.</p>
+                            </div>
+                        </model-viewer>
+                        <ul class="feature-list">
+                            <li>Column structure failed after a few tests</li>
+                            <li>Required a more robust structure</li>
+                        </ul>
                     </div>
                     <div class="iteration-card solution">
-                        <h4>Version 2: Improvements</h4>
-                        <img src="images/image49.png" alt="Adapter Version 2" class="iteration-image">
+                        <h4>Version 2</h4>
+                        <model-viewer class="model-viewer-frame"
+                                      src="images/adaptor_v6.glb"
+                                      auto-rotate
+                                      camera-controls
+                                      ar
+                                      style="--progress-bar-color: var(--primary-color); --poster-color: transparent;"
+                                      alt="Adapter Version 2 3D model">
+                            <div class="model-fallback">
+                                <p>Loading 3D model... ensure <code>model-viewer</code> script is available.</p>
+                            </div>
+                        </model-viewer>
                         <ul class="feature-list">
                             <li>Higher infill rate to increase overall stiffness</li>
                             <li>Stronger ribs to distribute stress more equally</li>
@@ -377,56 +461,6 @@
         </div>
     </section>
 
-    <!-- Demo & Results -->
-    <section id="demo" class="section">
-        <div class="container">
-            <h2 class="section-title">System in Action</h2>
-            <div class="video-wrapper">
-                <iframe src="https://www.youtube.com/embed/4Mbxl2Z15pg?si=uDb3a2DtugLRp3_x"
-                        title="PRISM Demo Video"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowfullscreen>
-                </iframe>
-            </div>
-            <div class="step-flow">
-                <div class="step-card">
-                    <h4>1. Scan & Queue</h4>
-                    <p>Parse TFs to build target list</p>
-                </div>
-                <div class="step-arrow">→</div>
-                <div class="step-card">
-                    <h4>2. Aligned Pick</h4>
-                    <p>Match frame & grip</p>
-                </div>
-                <div class="step-arrow">→</div>
-                <div class="step-card">
-                    <h4>3. Move to Target</h4>
-                    <p>Plan & transport</p>
-                </div>
-                <div class="step-arrow">→</div>
-                <div class="step-card">
-                    <h4>4. Tilt & Place</h4>
-                    <p>Release with tilt</p>
-                </div>
-            </div>
-            <div class="demo-grid">
-                <div class="demo-item">
-                    <img src="images/image39.gif" alt="Slide Detection Demo" class="demo-gif">
-                </div>
-                <div class="demo-item">
-                    <img src="images/image40.gif" alt="Pick and Place Demo" class="demo-gif">
-                </div>
-                <div class="demo-item">
-                    <img src="images/image38.gif" alt="Transport to target" class="demo-gif">
-                </div>
-                <div class="demo-item">
-                    <img src="images/image41.gif" alt="Placement" class="demo-gif">
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Summary -->
     <section id="summary" class="section dark-section">
         <div class="container">
@@ -434,15 +468,15 @@
             <div class="summary-content">
                 <div class="summary-item">
                     <div class="summary-number">01</div>
-                    <p>Implement G-SAM and slide edge detection pipeline to locate slides positions</p>
+                    <p>Perception — Implement G-SAM and slide edge detection pipeline to locate slides positions</p>
                 </div>
                 <div class="summary-item">
                     <div class="summary-number">02</div>
-                    <p>Utilize MoveIt2 to calculate inverse kinematics and generate path</p>
+                    <p>Planning — Utilize MoveIt2 to calculate inverse kinematics and generate path</p>
                 </div>
                 <div class="summary-item">
                     <div class="summary-number">03</div>
-                    <p>Connect hardware components with the custom adapter and execute control sequence</p>
+                    <p>Actuation — Connect hardware components with the custom adapter and execute control sequence</p>
                 </div>
             </div>
         </div>
@@ -454,16 +488,18 @@
             <div class="team-info">
                 <h3>Team 45</h3>
                 <div class="team-members">
-                    <div class="member">David Chen</div>
-                    <div class="member"><a class="member-link" href="https://youtube.com/@ryanchung900224?si=g7Y9Sm8K0Ksij3-9" target="_blank" rel="noopener noreferrer">Ryan Chung</a></div>
-                    <div class="member">Yu-Wei Chang</div>
-                    <div class="member">Bryan Chang</div>
-                    <div class="member">Kain Hung</div>
+                    <div class="member"><a class="member-link" href="https://www.linkedin.com/in/twchen1258?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">David Chen</a></div>
+                    <div class="member"><a class="member-link" href="https://www.linkedin.com/in/yu-chen-ryan-chung-6023761b4?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">Ryan Chung</a></div>
+                    <div class="member"><a class="member-link" href="https://www.linkedin.com/in/%E8%82%B2%E7%91%8B-%E5%BC%B5-6005ab2b8?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">Yu-Wei Chang</a></div>
+                    <div class="member"><a class="member-link" href="https://www.linkedin.com/in/bryanchang9?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">Bryan Chang</a></div>
+                    <div class="member"><a class="member-link" href="https://www.linkedin.com/in/kain-yukai?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">Kain Hung</a></div>
                 </div>
                 <div class="sponsor-section">
-                    <h4>Industry Project Sponsor</h4>
+                    <h4>Industry Sponsor</h4>
                     <div class="sponsor-inline">
-                        <img src="images/image19.png" alt="Ember Robotics logo" class="sponsor-logo">
+                        <a class="sponsor-link" href="https://www.emberrobotics.com/?fbclid=PAVERFWAOwW2tleHRuA2FlbQIxMABzcnRjBmFwcF9pZA8xMjQwMjQ1NzQyODc0MTQAAafVPpRGxLzPFImMw6ngKpcwA2eBrGzsqKDoDbis0eEX3I6csSywF9z_8BO5AA_aem_jpWe8Ew0_2x6j5XCeodBFw" target="_blank" rel="noopener noreferrer">
+                            <img src="images/image19.png" alt="Ember Robotics logo" class="sponsor-logo">
+                        </a>
                     </div>
                 </div>
             </div>
@@ -477,6 +513,7 @@
         </div>
     </footer>
 
+    <script type="module" src="libs/model-viewer.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
