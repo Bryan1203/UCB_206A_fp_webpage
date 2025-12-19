@@ -489,6 +489,24 @@ body {
     color: var(--secondary-color);
 }
 
+.section-subhead {
+    font-size: 2.2rem;
+    margin: 0 0 1.5rem;
+    color: var(--text-dark);
+    letter-spacing: 0.01em;
+    scroll-margin-top: 140px;
+}
+
+.dark-section .section-subhead {
+    color: var(--text-light);
+}
+
+.anchor-spacer {
+    height: 0;
+    scroll-margin-top: 170px;
+}
+
+
 .strategies-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
@@ -819,16 +837,19 @@ table td {
 }
 
 .future-card {
-    background: white;
+    background: var(--darker-bg);
     padding: 2rem;
     border-radius: 15px;
     text-align: center;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid transparent;
 }
 
 .future-card:hover {
-    transform: translateY(-5px) scale(1.02);
+    transform: translateX(10px);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(255, 140, 66, 0.25);
 }
 
 .future-icon {
@@ -839,7 +860,25 @@ table td {
 .future-card h4 {
     font-size: 1.1rem;
     margin-bottom: 0.75rem;
-    color: var(--secondary-color);
+    color: var(--primary-color);
+}
+
+.future-card p {
+    color: var(--text-light);
+    font-weight: 700;
+}
+
+.section-note {
+    margin: 1rem 0 3.4rem;
+    color: inherit;
+    line-height: 1.6;
+}
+
+.conclusion-section .container {
+    border: 2px solid var(--primary-color);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
 }
 
 /* Summary */
@@ -928,6 +967,14 @@ table td {
     font-weight: 600;
     box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3);
     white-space: nowrap;
+}
+
+.member-role {
+    font-size: 0.85rem;
+    font-weight: 500;
+    opacity: 0.9;
+    display: block;
+    margin-top: 0.2rem;
 }
 
 .member-link {

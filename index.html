@@ -12,13 +12,11 @@
         <div class="nav-container">
             <div class="logo">PRISM</div>
             <ul class="nav-menu">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#overview">Problem</a></li>
-                <li><a href="#demo-video">Demo</a></li>
-                <li><a href="#system-overview">System</a></li>
-                <li><a href="#perception">Perception</a></li>
-                <li><a href="#planning">Planning</a></li>
-                <li><a href="#actuation">Actuation</a></li>
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#results">Results</a></li>
+                <li><a href="#design">Design</a></li>
+                <li><a href="#implementation">Implementation</a></li>
+                <li><a href="#conclusion">Conclusion</a></li>
                 <li><a href="#team">Team</a></li>
             </ul>
         </div>
@@ -35,14 +33,15 @@
                 <span class="separator">|</span>
                 <span class="sponsor">Industry Project by Ember Robotics</span>
             </div>
-            <a href="#overview" class="cta-button">Explore Project</a>
+            <a href="#introduction" class="cta-button">Explore Project</a>
         </div>
     </section>
 
     <!-- Problem Statement -->
-    <section id="overview" class="section problem-section">
+    <section id="introduction" class="section problem-section">
         <div class="container">
-            <h2 class="section-title">Problem Statement</h2>
+            <h2 class="section-title">Introduction</h2>
+            <p class="section-note">This project is an Industry Track collaboration with Ember Robotics to design and implement a vision-guided pick-and-place system using a Techman robotic arm. Our goal is to manipulate fragile glass lab slides with high precision, which requires robust object detection, accurate motion planning, and precise actuation. More importantly, we will integrate the Ember platform for real-time performance monitoring, analyzing joint and motor data to detect anomalies such as slippage or misalignment. The outcome will be a data-driven, self-observing robotic system that enhances reliability and minimizes downtime, showcasing advanced robotics for industrial applications.</p>
             <div class="problem-grid">
                 <div class="problem-card">
                     <div class="icon">👷‍♂️</div>
@@ -61,6 +60,7 @@
                     <div class="goal-content">
                         <div class="goal-text">
                             <h3>Our Goal</h3>
+                            <p>Our goal is to design, build, and test a vision-guided pick-and-place system using a Techman robotic arm that can manipulate lab glass slides with high precision while being continuously monitored for performance degradations or system anomalies. For successful task execution, the robot should detect the location of each slide, pick it from a tray, and place it accurately onto a target rack.</p>
                             <p>Design an intelligent manipulator system with:</p>
                             <ul class="feature-list">
                                 <li>Computer vision for slide identification</li>
@@ -73,16 +73,17 @@
                         </div>
                     </div>
                 </div>
-                <p class="approach"><strong>Our Approach:</strong> Integrate computer vision + motion planning + custom hardware into a complete ROS2 system</p>
+                <p class="approach">Our approach combines computer vision, motion planning, and custom hardware into a complete ROS2 system. We detect slide poses, compute precise trajectories, and execute robust pick-and-place actions with a custom adapter and gripper, targeting repeatable performance in a laboratory setting.</p>
             </div>
 
         </div>
     </section>
 
     <!-- Demo Video -->
-    <section id="demo-video" class="section">
+    <section id="results" class="section">
         <div class="container">
-            <h2 class="section-title">Demo Video</h2>
+            <h2 class="section-title">Results</h2>
+            <p class="section-note">The final system demonstrates consistent and repeatable slide manipulation across multiple trials, as shown in the visual demonstrations below.</p>
             <div class="video-wrapper">
                 <iframe src="https://www.youtube.com/embed/4Mbxl2Z15pg?si=uDb3a2DtugLRp3_x"
                         title="PRISM Demo Video"
@@ -95,11 +96,12 @@
     </section>
 
     <!-- System Overview -->
-    <section id="system-overview" class="section dark-section">
+    <section id="design" class="section dark-section">
         <div class="container">
-            <h2 class="section-title">System Overview</h2>
+            <h2 class="section-title">Design</h2>
+            <p class="section-note">The system is designed as a modular pipeline consisting of perception, planning, and actuation components. Hardware design focuses on a custom adapter to ensure mechanical stability, while software design emphasizes clear separation between sensing and execution through iterative refinement.</p>
             <div class="system-pillars">
-                <a class="pillar-link" href="#perception">
+                <a class="pillar-link" href="#perception-target">
                     <div class="pillar">
                         <div class="pillar-icon">👁️</div>
                         <h3>Perception</h3>
@@ -137,10 +139,14 @@
     </section>
 
     <!-- Perception Section -->
-    <section id="perception" class="section">
+    <section id="implementation" class="section">
         <div class="container">
-            <h2 class="section-title">Perception</h2>
+            <h2 class="section-title">Implementation</h2>
+            <p class="section-note">The implementation integrates custom hardware with a software pipeline for perception, motion planning, and execution, enabling reliable end-to-end slide manipulation.</p>
 
+            <div id="perception-target" class="anchor-spacer"></div>
+            <h3 class="section-subhead">Perception</h3>
+            <p class="section-note">The perception module is responsible for detecting the microscope slide and estimating its pose within the workspace. Using Intel RealSense input, the system identifies the slide’s position and orientation relative to the robot with CV algorithm, providing a consistent geometric reference for downstream modules. Accurate perception is critical for reliable grasping, as small errors in pose estimation can lead to failed grasps or misalignment during placement.</p>
             <div class="perception-overview">
                 <div class="overview-content">
                     <h3>Challenge</h3>
@@ -267,7 +273,8 @@
     <!-- Planning Section -->
     <section id="planning" class="section dark-section">
         <div class="container">
-            <h2 class="section-title">Planning</h2>
+            <h3 class="section-subhead">Planning</h3>
+            <p class="section-note">The planning module takes the estimated slide pose from the perception stage and uses MoveIt2 to compute a feasible, collision-free motion plan for the robotic arm. This includes determining appropriate approach, grasp, and retreat motions while respecting kinematic constraints and environmental obstacles. The resulting trajectory ensures that the robot can safely and smoothly reach the target pose without violating task constraints.</p>
 
             <div class="step-flow">
                 <div class="step-card">
@@ -343,7 +350,8 @@
     <!-- Actuation Section -->
     <section id="actuation" class="section">
         <div class="container">
-            <h2 class="section-title">Actuation</h2>
+            <h3 class="section-subhead">Actuation</h3>
+            <p class="section-note">The actuation module executes the planned trajectory on the physical robot by sending motion commands to the arm and gripper. It coordinates joint-level control to achieve stable grasping and precise placement of the slide. Reliable actuation is essential for closing the loop between planning and real-world execution, ensuring that planned motions translate into consistent physical behavior. The gripper evolved from an initial MG996R servo design to an improved Arduino Nano–controlled gripper (USB to ROS2), providing more stable pick-and-place performance with the custom adapter.</p>
 
             <div class="actuation-challenge">
                 <h3>Challenge</h3>
@@ -439,10 +447,36 @@
         </div>
     </section>
 
-    <!-- Future Work -->
-    <section id="future" class="section">
+    <!-- Conclusion -->
+    <section id="conclusion" class="section dark-section conclusion-section">
         <div class="container">
-            <h2 class="section-title">Future Improvements</h2>
+            <h2 class="section-title">Conclusion</h2>
+
+            <h3 class="section-subhead">Summary</h3>
+            <p class="section-note summary-note">This project delivers a full-stack, vision-guided pick-and-place system for fragile lab slides, integrating perception, planning, and actuation on a Techman arm with custom adapters and grippers. Robust perception (ArUco and G-SAM), MoveIt2-based planning, and iterative hardware refinements improved grasp stability and placement accuracy. The system demonstrates consistent end-to-end performance under real laboratory constraints, showing that careful sensing, trajectory generation, and execution can reliably automate slide handling.</p>
+            <div class="summary-content">
+                <a class="summary-item-link" href="#perception-target">
+                    <div class="summary-item">
+                        <div class="summary-number">01</div>
+                        <p>Perception — Implement G-SAM and slide edge detection pipeline to locate slides positions</p>
+                    </div>
+                </a>
+                <a class="summary-item-link" href="#planning">
+                    <div class="summary-item">
+                        <div class="summary-number">02</div>
+                        <p>Planning — Utilize MoveIt2 to calculate inverse kinematics and generate path</p>
+                    </div>
+                </a>
+                <a class="summary-item-link" href="#actuation">
+                    <div class="summary-item">
+                        <div class="summary-number">03</div>
+                        <p>Actuation — Connect hardware components with the custom adapter and execute control sequence</p>
+                    </div>
+                </a>
+            </div>
+
+            <h3 class="section-subhead">Future Work</h3>
+            <p class="section-note">Future work focuses on four upgrades: a more robust CV model (e.g., end-to-end YOLO) to increase detection speed, improve accuracy, and reduce false positives; an adaptive gripper to handle a wider range of slide thicknesses and materials while maintaining a stable grasp; more precise placement to preserve orientation and spacing, preventing downstream alignment issues; and speed optimization via precomputed paths plus performance monitoring to cut cycle time and surface anomalies early. Together, these enhancements aim to make the system faster, more reliable, and easier to deploy across diverse lab workflows.</p>
             <div class="future-grid">
                 <div class="future-card">
                     <div class="future-icon">🎯</div>
@@ -468,44 +502,32 @@
         </div>
     </section>
 
-    <!-- Summary -->
-    <section id="summary" class="section dark-section">
-        <div class="container">
-            <h2 class="section-title">Summary</h2>
-            <div class="summary-content">
-                <a class="summary-item-link" href="#perception">
-                    <div class="summary-item">
-                        <div class="summary-number">01</div>
-                        <p>Perception — Implement G-SAM and slide edge detection pipeline to locate slides positions</p>
-                    </div>
-                </a>
-                <a class="summary-item-link" href="#planning">
-                    <div class="summary-item">
-                        <div class="summary-number">02</div>
-                        <p>Planning — Utilize MoveIt2 to calculate inverse kinematics and generate path</p>
-                    </div>
-                </a>
-                <a class="summary-item-link" href="#actuation">
-                    <div class="summary-item">
-                        <div class="summary-number">03</div>
-                        <p>Actuation — Connect hardware components with the custom adapter and execute control sequence</p>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </section>
-
     <!-- Team Section -->
     <section id="team" class="section">
         <div class="container">
             <div class="team-info">
                 <h3>Team 45</h3>
                 <div class="team-members">
-                    <div class="member"><a class="member-link" href="https://www.linkedin.com/in/twchen1258?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">David Chen</a></div>
-                    <div class="member"><a class="member-link" href="https://www.linkedin.com/in/yu-chen-ryan-chung-6023761b4?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">Ryan Chung</a></div>
-                    <div class="member"><a class="member-link" href="https://www.linkedin.com/in/%E8%82%B2%E7%91%8B-%E5%BC%B5-6005ab2b8?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">Yu-Wei Chang</a></div>
-                    <div class="member"><a class="member-link" href="https://www.linkedin.com/in/bryanchang9?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">Bryan Chang</a></div>
-                    <div class="member"><a class="member-link" href="https://www.linkedin.com/in/kain-yukai?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">Kain Hung</a></div>
+                    <div class="member">
+                        <a class="member-link" href="https://www.linkedin.com/in/twchen1258?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">David Chen</a>
+                        <div class="member-role">Actuation</div>
+                    </div>
+                    <div class="member">
+                        <a class="member-link" href="https://www.linkedin.com/in/yu-chen-ryan-chung-6023761b4?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">Ryan Chung</a>
+                        <div class="member-role">Website, Support</div>
+                    </div>
+                    <div class="member">
+                        <a class="member-link" href="https://www.linkedin.com/in/%E8%82%B2%E7%91%8B-%E5%BC%B5-6005ab2b8?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">Yu-Wei Chang</a>
+                        <div class="member-role">CAD, Support</div>
+                    </div>
+                    <div class="member">
+                        <a class="member-link" href="https://www.linkedin.com/in/bryanchang9?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">Bryan Chang</a>
+                        <div class="member-role">Planning</div>
+                    </div>
+                    <div class="member">
+                        <a class="member-link" href="https://www.linkedin.com/in/kain-yukai?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">Kain Hung</a>
+                        <div class="member-role">Perception</div>
+                    </div>
                 </div>
                 <div class="team-photo">
                     <img src="images/A06A3410-07AA-4A2C-9B80-09E02DA154F3.PNG" alt="Team 45 group photo">
