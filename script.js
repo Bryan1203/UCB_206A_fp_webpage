@@ -251,3 +251,21 @@ window.addEventListener('load', () => {
 console.log('%cPRISM Project', 'color: #00d4ff; font-size: 24px; font-weight: bold;');
 console.log('%cPrecision Relocation via Intelligent Slide Manipulation', 'color: #6c63ff; font-size: 14px;');
 console.log('%cTeam 45 - EECS/ME 206A', 'color: #666; font-size: 12px;');
+
+// Kernel slider for detection visualization
+const kernelSlider = document.getElementById('kernel-slider');
+const kernelValue = document.getElementById('kernel-value');
+const kernelImage = document.getElementById('kernel-image');
+
+const updateKernelImage = () => {
+    if (!kernelSlider || !kernelValue || !kernelImage) return;
+    const sliderVal = Number(kernelSlider.value);
+    const fileIndex = sliderVal - 1; // files are 0-based
+    kernelImage.src = `images/25_kernels/yellow_convolved_${fileIndex}.png`;
+    kernelValue.textContent = sliderVal;
+};
+
+if (kernelSlider) {
+    kernelSlider.addEventListener('input', updateKernelImage);
+    updateKernelImage();
+}

@@ -462,6 +462,23 @@ body {
     margin: 0.5rem 0;
 }
 
+.challenge-content {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.challenge-graphic img {
+    max-width: 140px;
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.challenge-graphic {
+    margin-left: auto;
+}
+
 .subsection-title {
     font-size: 1.8rem;
     margin: 2rem 0 1.5rem;
@@ -519,9 +536,9 @@ body {
 .pipeline-step {
     background: var(--gradient-2);
     color: white;
-    padding: 0.5rem 1rem;
+    padding: 0.45rem 0.9rem;
     border-radius: 20px;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 600;
     white-space: nowrap;
 }
@@ -529,7 +546,7 @@ body {
 .pipeline-arrow {
     color: var(--primary-color);
     font-weight: bold;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
 }
 
 /* Comparison Table */
@@ -994,6 +1011,11 @@ footer {
         flex-direction: column;
     }
 
+    .challenge-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
     .hero-visual {
         width: 120vw;
         height: 110vh;
@@ -1107,13 +1129,56 @@ footer {
 }
 
 .viz-item:hover .viz-image {
-    transform: scale(1.05);
+    transform: scale(1);
 }
 
 .viz-item p {
     font-size: 1rem;
     color: var(--text-dark);
     font-weight: 500;
+}
+
+.kernel-slider {
+    margin-top: 2rem;
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.kernel-slider .slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.kernel-slider input[type="range"] {
+    width: 100%;
+    accent-color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.kernel-image-frame {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    aspect-ratio: 4 / 3;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: transparent;
+    box-shadow: none;
+}
+
+.kernel-image-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 .hardware-showcase {

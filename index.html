@@ -146,9 +146,16 @@
                     <h3>Challenge</h3>
                     <p>Detect yellow slide box and transparent glass slides using <strong>PURE RGB only!</strong></p>
                     <div class="challenge-box">
-                        <p><strong>Input:</strong> An RGB image</p>
-                        <p><strong>Output:</strong> Slide position + orientation (in SE3)</p>
-                        <p><strong>Technical Challenge:</strong> Depth cam cannot see through transparent glass slide</p>
+                        <div class="challenge-content">
+                            <div class="challenge-text">
+                                <p><strong>Input:</strong> An RGB image</p>
+                                <p><strong>Output:</strong> Slide position + orientation (in SE3)</p>
+                                <p><strong>Technical Challenge:</strong> Depth cam cannot see through transparent glass slide</p>
+                            </div>
+                            <div class="challenge-graphic">
+                                <img src="images/intel_realsense-removebg-preview.png" alt="Perception sensor">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -159,13 +166,13 @@
                     <h4>ArUco Marker + OpenCV</h4>
                     <div class="strategy-content">
                         <div class="pipeline">
-                            <div class="pipeline-step">Frame Publication</div>
+                            <div class="pipeline-step">Marker Detect</div>
                             <div class="pipeline-arrow">→</div>
                             <div class="pipeline-step">Box Localization</div>
                             <div class="pipeline-arrow">→</div>
                             <div class="pipeline-step">Slide Detection</div>
                             <div class="pipeline-arrow">→</div>
-                            <div class="pipeline-step">Canny Edge Detection</div>
+                            <div class="pipeline-step">Frame Publication</div>
                         </div>
                         <ul class="feature-list">
                             <li><strong>Marker Detection:</strong> Stable OpenCV library to locate the box & region of interest</li>
@@ -175,7 +182,7 @@
                             <li><strong>Limitation:</strong> Requires marker, fixed slide position</li>
                         </ul>
                         <div class="method-images">
-                            <img src="images/image29.png" alt="Canny Edge Detection Results" class="method-image">
+                            <img src="images/marker.jpg" alt="ArUco marker detection" class="method-image">
                         </div>
                     </div>
                 </div>
@@ -184,13 +191,13 @@
                     <h4>G-SAM (GroundedDINO + SAM)</h4>
                     <div class="strategy-content">
                         <div class="pipeline">
-                            <div class="pipeline-step">Frame Publication</div>
-                            <div class="pipeline-arrow">→</div>
-                            <div class="pipeline-step">Text-Obj Detection (GroundedDINO)</div>
+                            <div class="pipeline-step">Text-Object Detection</div>
                             <div class="pipeline-arrow">→</div>
                             <div class="pipeline-step">Image Segmentation (SAM)</div>
                             <div class="pipeline-arrow">→</div>
                             <div class="pipeline-step">Slide Detection</div>
+                            <div class="pipeline-arrow">→</div>
+                            <div class="pipeline-step">Frame Publication</div>
                         </div>
                         <ul class="feature-list">
                             <li><strong>GroundedDINO:</strong> Text-based object detection for identifying objects</li>
@@ -200,7 +207,7 @@
                             <li><strong>Advantage:</strong> No marker required, adaptable to any slide position</li>
                         </ul>
                         <div class="method-images">
-                            <img src="images/image31.png" alt="G-SAM Detection Pipeline" class="method-image">
+                            <img src="images/marker_free.jpg" alt="G-SAM detection pipeline" class="method-image">
                         </div>
                     </div>
                 </div>
@@ -208,16 +215,16 @@
 
             <div class="perception-visualization">
                 <h3 class="subsection-title">Detection Visualization</h3>
-                <div class="visualization-grid">
-                    <div class="viz-item">
-                        <img src="images/image24.png" alt="Slide Detection Grid" class="viz-image">
-                        <p>25-kernel grid for slide detection</p>
-                    </div>
-                    <div class="viz-item">
-                        <img src="images/image27.png" alt="Detection Results" class="viz-image">
-                        <p>Real-time detection results</p>
-                    </div>
+                <div class="kernel-slider">
+                    <div class="slider-header">
+                    <span class="slider-label">Kernel Index</span>
+                    <span class="slider-value" id="kernel-value">1</span>
                 </div>
+                <input type="range" id="kernel-slider" min="1" max="25" step="1" value="1">
+                <div class="kernel-image-frame">
+                    <img id="kernel-image" src="images/25_kernels/yellow_convolved_0.png" alt="Kernel frame">
+                </div>
+            </div>
             </div>
 
             <div class="comparison-table">
@@ -248,8 +255,8 @@
                         </tr>
                         <tr>
                             <td>Adaptability</td>
-                            <td>Fixed slide position</td>
-                            <td class="positive">Any slide position</td>
+                            <td>Any slide position and orientation</td>
+                            <td class="positive">Any slide position and orientation</td>
                         </tr>
                     </tbody>
                 </table>
