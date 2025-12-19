@@ -172,7 +172,7 @@
                     <h4>ArUco Marker + OpenCV</h4>
                     <div class="strategy-content">
                         <div class="pipeline">
-                            <div class="pipeline-step">Marker Detect</div>
+                            <div class="pipeline-step">Marker Detection</div>
                             <div class="pipeline-arrow">→</div>
                             <div class="pipeline-step">Box Localization</div>
                             <div class="pipeline-arrow">→</div>
@@ -229,6 +229,9 @@
                 <input type="range" id="kernel-slider" min="1" max="25" step="1" value="1">
                 <div class="kernel-image-frame">
                     <img id="kernel-image" src="images/25_kernels/yellow_convolved_0.png" alt="Kernel frame">
+                    <div id="glass-slide-indicator" class="glass-slide-indicator" style="display: none;">
+                        ✓ Glass Slide Detected
+                    </div>
                 </div>
             </div>
             </div>

@@ -256,6 +256,7 @@ console.log('%cTeam 45 - EECS/ME 206A', 'color: #666; font-size: 12px;');
 const kernelSlider = document.getElementById('kernel-slider');
 const kernelValue = document.getElementById('kernel-value');
 const kernelImage = document.getElementById('kernel-image');
+const glassSlideIndicator = document.getElementById('glass-slide-indicator');
 
 const updateKernelImage = () => {
     if (!kernelSlider || !kernelValue || !kernelImage) return;
@@ -263,6 +264,15 @@ const updateKernelImage = () => {
     const fileIndex = sliderVal - 1; // files are 0-based
     kernelImage.src = `images/25_kernels/yellow_convolved_${fileIndex}.png`;
     kernelValue.textContent = sliderVal;
+
+    // Show "glass slide detected" indicator for kernel indices 4, 10, 15, 20
+    if (glassSlideIndicator) {
+        if (sliderVal === 4 || sliderVal === 10 || sliderVal === 15 || sliderVal === 20) {
+            glassSlideIndicator.style.display = 'block';
+        } else {
+            glassSlideIndicator.style.display = 'none';
+        }
+    }
 };
 
 if (kernelSlider) {
