@@ -18,6 +18,7 @@
                 <li><a href="#implementation">Implementation</a></li>
                 <li><a href="#conclusion">Conclusion</a></li>
                 <li><a href="#team">Team</a></li>
+                <li><a href="#additional-materials">Additional Materials</a></li>
             </ul>
         </div>
     </nav>
@@ -41,7 +42,7 @@
     <section id="introduction" class="section problem-section">
         <div class="container">
             <h2 class="section-title">Introduction</h2>
-            <p class="section-note">This project is an Industry Track collaboration with Ember Robotics to design and implement a vision-guided pick-and-place system using a Techman robotic arm. Our goal is to manipulate fragile glass lab slides with high precision, which requires robust object detection, accurate motion planning, and precise actuation. More importantly, we will integrate the Ember platform for real-time performance monitoring, analyzing joint and motor data to detect anomalies such as slippage or misalignment. The outcome will be a data-driven, self-observing robotic system that enhances reliability and minimizes downtime, showcasing advanced robotics for industrial applications.</p>
+            <p class="section-note">This project is an Industry Track collaboration with Ember Robotics to design and implement a vision-guided pick-and-place system using a Techman robotic arm. Our goal is to manipulate fragile glass lab slides with high precision, which requires robust object detection, accurate motion planning, and precise actuation. This work addresses critical challenges in places such as laboratory environments or chemical handling manufacturing lines, where current workflows suffer from:</p>
             <div class="problem-grid">
                 <div class="problem-card">
                     <div class="icon">👷‍♂️</div>
@@ -60,8 +61,7 @@
                     <div class="goal-content">
                         <div class="goal-text">
                             <h3>Our Goal</h3>
-                            <p>Our goal is to design, build, and test a vision-guided pick-and-place system using a Techman robotic arm that can manipulate lab glass slides with high precision while being continuously monitored for performance degradations or system anomalies. For successful task execution, the robot should detect the location of each slide, pick it from a tray, and place it accurately onto a target rack.</p>
-                            <p>Design an intelligent manipulator system with:</p>
+                            <p>We designed, built, and tested a vision-guided pick-and-place system using a Techman TM12 robotic arm that can manipulate and relocate lab glass slides with high precision. For successful task execution, the robot detects the position and orientation of each slide, picks it from a source tray, and places it accurately onto a target rack. This project tackles several interesting technical problems that make automated slide manipulation difficult:</p>
                             <ul class="feature-list">
                                 <li>Computer vision for slide identification</li>
                                 <li>Precise pick-and-place in 3D space</li>
@@ -73,7 +73,7 @@
                         </div>
                     </div>
                 </div>
-                <p class="approach">Our approach combines computer vision, motion planning, and custom hardware into a complete ROS2 system. We detect slide poses, compute precise trajectories, and execute robust pick-and-place actions with a custom adapter and gripper, targeting repeatable performance in a laboratory setting.</p>
+                <p class="approach">Our approach combines computer vision, motion planning, and custom hardware into a complete ROS2 system. We detect slide poses, compute precise trajectories, and execute robust pick-and-place actions with a custom adapter and gripper, targeting repeatable performance in real-world laboratory settings.</p>
             </div>
 
         </div>
@@ -99,7 +99,24 @@
     <section id="design" class="section dark-section">
         <div class="container">
             <h2 class="section-title">Design</h2>
-            <p class="section-note">The system is designed as a modular pipeline consisting of perception, planning, and actuation components. Hardware design focuses on a custom adapter to ensure mechanical stability, while software design emphasizes clear separation between sensing and execution through iterative refinement.</p>
+            <h3 class="section-subhead">Design Criteria &amp; Requirements</h3>
+            <h4>Functional Requirements:</h4>
+            <ul class="feature-list">
+                <li>Detect and localize transparent glass slides with &lt;5mm position error</li>
+                <li>Pick slides without damage or slippage</li>
+                <li>Place slides accurately in target rack</li>
+                <li>Execute pick and place cycles continuously without failure</li>
+            </ul>
+            <h4>System Constraints:</h4>
+            <ul class="feature-list">
+                <li>Must integrate with existing TM12M robot arm</li>
+                <li>No existing gripper available to use</li>
+                <li>Must be able to pick up standard size lab slides (25mm x 75mm x 1mm)</li>
+                <li>RGB-only vision (depth sensors fail on transparent objects)</li>
+                <li>Laboratory space constraints</li>
+            </ul>
+            <h3 class="section-subhead">Design Overview</h3>
+            <p class="section-note">The system is designed as a modular pipeline consisting of perception, planning, and actuation components. Hardware design focuses on a custom adapter to ensure mechanical stability, while software design emphasizes clear separation between sensing and execution through iterative refinement. This architecture separates concerns, enabling independent development and testing of each module while maintaining clear interfaces through ROS2 topics and services.</p>
             <div class="system-pillars">
                 <a class="pillar-link" href="#perception-target">
                     <div class="pillar">
@@ -123,6 +140,7 @@
                     </div>
                 </a>
             </div>
+
         </div>
     </section>
 
@@ -130,10 +148,56 @@
     <section id="architecture" class="section dark-section">
         <div class="container">
             <h2 class="section-title">System Architecture</h2>
+            <p class="section-note">The system is designed to be launched via a centralized launch file that initializes all necessary ROS2 nodes. Once ready, the user sends a service request to the pick_and_place node, which orchestrates the entire manipulation pipeline. This node calls the slide_detector helper node to obtain slide information. The slide_detector subscribes to detected slide transforms (TFs) from either marker_detect or gsam_detect nodes and maintains a queue of slides to be picked. A static_tf_broadcaster connects the camera frame to the robot's TF tree, establishing the spatial reference. Finally, the ik_node computes inverse kinematics and generates optimal collision-free paths using MoveIt2, while the gripper_server node controls the servo actuator via Arduino interface.</p>
 
             <div class="architecture-image-container">
                 <img src="images/42A5B40D-EB54-408C-9088-F089410A0A6A.PNG" alt="PRISM System Architecture" class="architecture-main-image">
             </div>
+
+            <div class="design-table-wrapper">
+                <h3 class="section-subhead">Key Design Choices &amp; Trade-offs</h3>
+                <div class="design-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Design Choice</th>
+                                <th>Rationale</th>
+                                <th>Trade-off</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Dual perception methods (ArUco + G-SAM)</td>
+                                <td>ArUco is fast but needs markers; G-SAM is flexible but slower</td>
+                                <td>Speed vs. adaptability. Therefore, we provide both options for the users to choose</td>
+                            </tr>
+                            <tr>
+                                <td>Intel RealSense D435i camera</td>
+                                <td>Camera already available for us; small and lightweight; Better resolution and frame rate than built-in camera</td>
+                                <td>Additional hardware to mount and wire, but saves development time and provides the quality needed for precise slide detection</td>
+                            </tr>
+                            <tr>
+                                <td>MoveIt2 + RRTstar planner</td>
+                                <td>Proven collision avoidance, handles complex joint constraints; team members familiar with this library</td>
+                                <td>Slower than analytical IK, but more robust for obstacles</td>
+                            </tr>
+                            <tr>
+                                <td>Custom adapter (v2 with ribs)</td>
+                                <td>No off-the-shelf mounts could fit camera + gripper together in desired location and orientation</td>
+                                <td>Added design/fabrication time (especially multiple iterations), but customizable to our exact needs</td>
+                            </tr>
+                            <tr>
+                                <td>Arduino-controlled gripper</td>
+                                <td>Jetson Nano PWM was unstable over long distances; offloading to Arduino Nano improved reliability</td>
+                                <td>Extra hardware component and cable, but cleaner ROS2 interface</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <h3 class="section-subhead">Impact on Real World Engineering Criteria</h3>
+            <p class="section-note">These design choices directly improve real-world performance: Robustness is achieved through dual perception methods (ArUco and G-SAM) that provide fallback options when markers are unavailable or slides are repositioned, plus the MoveIt2 IK solver that prevents trajectory planning failures. Durability comes from the reinforced adapter v2 that survived 20+ test cycles without cracking, and the careful selection of wire gauges and WAGO connectors that reliably power the gripper. Efficiency is demonstrated by ArUco detection running at 30 fps for real-time operation, and the Arduino-controlled gripper achieves minimal latency because it runs dedicated bare-metal code. The modular ROS2 architecture also allows parallel development and easy component swapping, reducing integration time during testing and debugging.</p>
 
         </div>
     </section>
@@ -507,27 +571,44 @@
         <div class="container">
             <div class="team-info">
                 <h3>Team 45</h3>
-                <div class="team-members">
-                    <div class="member">
-                        <a class="member-link" href="https://www.linkedin.com/in/twchen1258?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">David Chen</a>
-                        <div class="member-role">Actuation</div>
-                    </div>
-                    <div class="member">
-                        <a class="member-link" href="https://www.linkedin.com/in/yu-chen-ryan-chung-6023761b4?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">Ryan Chung</a>
-                        <div class="member-role">Website, Support</div>
-                    </div>
-                    <div class="member">
-                        <a class="member-link" href="https://www.linkedin.com/in/%E8%82%B2%E7%91%8B-%E5%BC%B5-6005ab2b8?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">Yu-Wei Chang</a>
-                        <div class="member-role">CAD, Support</div>
-                    </div>
-                    <div class="member">
-                        <a class="member-link" href="https://www.linkedin.com/in/bryanchang9?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">Bryan Chang</a>
-                        <div class="member-role">Planning</div>
-                    </div>
-                    <div class="member">
-                        <a class="member-link" href="https://www.linkedin.com/in/kain-yukai?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">Kain Hung</a>
-                        <div class="member-role">Perception</div>
-                    </div>
+
+                <div class="team-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Contribution</th>
+                                <th>Background</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><a class="team-link" href="https://www.linkedin.com/in/twchen1258?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">David Chen</a></td>
+                                <td>Actuation</td>
+                                <td>David is an EECS M.Eng. student specializing in Robotics and AI. He completed his undergraduate studies in Computer Science and Engineering at UC Irvine, where he worked on various embedded software projects involving object detection algorithms, neural networks, Raspberry Pi, Arduino, and drones. He also has hands-on experience in vehicle engineering and technical project management through his role as the Project Manager of the UCI Solar Car Project, where he led a multidisciplinary team in building a fully solar-powered electric vehicle from the ground up in two years.</td>
+                            </tr>
+                            <tr>
+                                <td><a class="team-link" href="https://www.linkedin.com/in/yu-chen-ryan-chung-6023761b4?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">Ryan Chung</a></td>
+                                <td>Website, Support</td>
+                                <td>Ryan is an M.Eng. student in Mechanical Engineering at UC Berkeley, focusing on robotics and control. He completed his undergraduate degree in Mechanical Engineering at National Taiwan University, with a minor in Music specializing in piano performance from National Taiwan Normal University. His academic and research interests center on medical and rehabilitation robotics, where he aims to develop systems that support healthcare professionals and improve patient care. His background in piano performance offers a distinctive perspective for the team’s robotic pianist project.</td>
+                            </tr>
+                            <tr>
+                                <td><a class="team-link" href="https://www.linkedin.com/in/%E8%82%B2%E7%91%8B-%E5%BC%B5-6005ab2b8?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">Yu-Wei Chang</a></td>
+                                <td>CAD, Support</td>
+                                <td>Yu-Wei is an M.Eng. student in Mechanical Engineering at UC Berkeley with a high interest in robotics, control, and mechanical design. He completed his undergraduate degree in Power Mechanical Engineering at National Tsing Hua University, where he worked on various projects such as a DC motor with a PI controller, Arduino applications, and mechanical structure design. His internship experiences at two manufacturing companies gave him great insight into industry needs.</td>
+                            </tr>
+                            <tr>
+                                <td><a class="team-link" href="https://www.linkedin.com/in/bryanchang9?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">Bryan Chang</a></td>
+                                <td>Planning</td>
+                                <td>Bryan is a MEng student in Electrical Engineering and Computer Science at UC Berkeley, specializing in autonomous driving systems and sensor data processing. With hands-on experience from multiple internships in the autonomous vehicle industry, he has developed expertise in LiDAR perception systems and created transformer-based machine learning models to automate lane line labeling for 3D point clouds. Currently working on an autonomous racing car project, Bryan is advancing LiDAR localization systems that operate under high-performance, real-time constraints. His technical foundation spans computer vision, signal processing, and robotics, with a particular strength in transforming raw sensor data into reliable, safety-critical insights for autonomous vehicles. Bryan's passion lies in solving the complex challenges of perception and localization that enable autonomous systems to navigate safely in dynamic environments.</td>
+                            </tr>
+                            <tr>
+                                <td><a class="team-link" href="https://www.linkedin.com/in/kain-yukai?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" target="_blank" rel="noopener noreferrer">Kain Hung</a></td>
+                                <td>Perception</td>
+                                <td>Kain is an EECS M.Eng. student with broad enthusiasm in computer vision, robotics, and AI. He completed his undergraduate degree at National Taiwan University, Computer Science department with three Human-Computer Interaction projects, where he explored numerous skills in hardware and software co-designing, including Arduino, OpenCV, OpenPose, and Pytorch. His hands-on experience includes a large-scale tangible interface, a thin, card-shaped robot with ML-based perception, and a multimodal AI system.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <div class="team-photo">
                     <img src="images/A06A3410-07AA-4A2C-9B80-09E02DA154F3.PNG" alt="Team 45 group photo">
@@ -541,6 +622,23 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- Additional Materials -->
+    <section id="additional-materials" class="section">
+        <div class="container">
+            <h2 class="section-title">Additional Materials</h2>
+            <p class="section-note">Link to our GitHub page: <a href="https://github.com/YuKai0928/25F_206A_FinalProject" target="_blank" rel="noopener noreferrer">https://github.com/YuKai0928/25F_206A_FinalProject</a></p>
+            <ul class="feature-list">
+                <li>ROS2 packages, launch files, model, and instructions</li>
+            </ul>
+            <p class="section-note">Link to our Google Drive: <a href="https://drive.google.com/drive/folders/1J0ep10ODH-zIUo68zBBcHVBDpZjkjJoT?usp=sharing" target="_blank" rel="noopener noreferrer">https://drive.google.com/drive/folders/1J0ep10ODH-zIUo68zBBcHVBDpZjkjJoT?usp=sharing</a></p>
+            <ul class="feature-list">
+                <li>CAD models for adapters</li>
+                <li>Component datasheets</li>
+                <li>Additional videos and images</li>
+            </ul>
         </div>
     </section>
 

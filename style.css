@@ -368,7 +368,7 @@ body {
 .feature-list {
     list-style: none;
     padding-left: 0;
-    margin: 1rem 0;
+    margin: 0.75rem 0 0.75rem;
 }
 
 .feature-list li {
@@ -645,6 +645,19 @@ table td {
 .dark-section table td {
     color: var(--text-light);
 }
+
+.design-table-wrapper {
+    margin-top: 2rem;
+}
+
+.design-table {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.design-table table {
+    min-width: 720px;
+}
 /* Planning Section */
 .planning-content h3 {
     font-size: 2rem;
@@ -869,7 +882,7 @@ table td {
 }
 
 .section-note {
-    margin: 1rem 0 3.4rem;
+    margin: 0.4rem 0 1.2rem;
     color: inherit;
     line-height: 1.6;
 }
@@ -980,6 +993,61 @@ table td {
 .member-link {
     color: inherit;
     text-decoration: none;
+}
+
+.team-table {
+    width: 100%;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+}
+
+.team-table table {
+    min-width: 1000px;
+}
+
+.team-table td {
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+.team-table td:first-child {
+    text-align: left;
+    white-space: nowrap;
+    text-justify: auto;
+}
+
+.team-table a.team-link {
+    color: inherit;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.team-table a.team-link:hover,
+.team-table a.team-link:focus-visible {
+    text-decoration: none;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 2px;
+}
+
+.team-table th:nth-child(2),
+.team-table td:nth-child(2) {
+    min-width: 260px;
+    white-space: nowrap;
+    text-align: left;
+}
+
+/* Additional Materials spacing */
+#additional-materials .section-note {
+    margin: 0 0 0.5rem;
+}
+
+#additional-materials .feature-list {
+    margin: 0 0 0.5rem;
+}
+
+#additional-materials .feature-list li {
+    margin: 0 0 0.5rem;
+    padding: 0 0 0 1.4rem;
 }
 
 .sponsor-section {
